@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudGuard Zero-Trust CSPM Console</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-950 text-slate-100 font-sans p-6 min-h-screen">
+
+  <!-- Header -->
+  <header class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-4 border-b border-gray-800">
+    <div class="flex items-center space-x-3">
+      <div class="w-4 h-4 rounded-full bg-emerald-400 animate-pulse"></div>
+      <h1 class="text-2xl font-bold text-emerald-400">
+        CloudGuard CSPM & Zero-Trust Console
+      </h1>
+    </div>
+
+    <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-semibold">
+      CLOUD SECURITY DASHBOARD
+    </span>
+  </header>
+
+  <!-- Dashboard Metrics -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
+    <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 shadow-md">
+      <p class="text-xs text-gray-400 font-bold uppercase">Cloud Assets Protected</p>
+      <h2 id="assets" class="text-3xl font-extrabold mt-2 text-white">1,248</h2>
+      <p class="text-xs text-gray-500 mt-2">Sample dashboard data</p>
+    </div>
+
+    <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 shadow-md">
+      <p class="text-xs text-gray-400 font-bold uppercase">Compliance Score</p>
+      <h2 id="compliance" class="text-3xl font-extrabold text-emerald-400 mt-2">98.4%</h2>
+      <p class="text-xs text-gray-500 mt-2">Sample dashboard data</p>
+    </div>
+
+    <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 shadow-md">
+      <p class="text-xs text-gray-400 font-bold uppercase">Open Security Findings</p>
+      <h2 id="findings" class="text-3xl font-extrabold text-amber-400 mt-2">12</h2>
+      <p class="text-xs text-gray-500 mt-2">Sample dashboard data</p>
+    </div>
+
+    <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 shadow-md">
+      <p class="text-xs text-gray-400 font-bold uppercase">Zero-Trust Status</p>
+      <h2 class="text-2xl font-bold text-cyan-400 mt-2">Monitoring</h2>
+      <p class="text-xs text-gray-500 mt-2">Demo mode</p>
+    </div>
+
+  </section>
+
+  <!-- Main Dashboard -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- Security Audit Feed -->
+    <div class="bg-gray-900 p-5 rounded-xl border border-gray-800 shadow-md">
+      <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+        <h3 class="text-lg font-bold text-emerald-400">
+          🔒 Cloud Security Audit Feed
+        </h3>
+
+        <button
+          onclick="refreshAuditFeed()"
+          class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg">
+          Refresh Feed
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-500 mb-3">
+        Demonstration findings — not connected to a live cloud account.
+      </p>
+
+      <div id="auditFeed" class="space-y-3 text-sm">
+
+        <div class="p-3 bg-emerald-950/40 border-l-2 border-emerald-500 rounded text-emerald-300">
+          <span class="font-bold">[PASS]</span>
+          Storage public access protection is enabled.
+        </div>
+
+        <div class="p-3 bg-amber-950/40 border-l-2 border-amber-500 rounded text-amber-300">
+          <span class="font-bold">[WARNING]</span>
+          A sample administrator account does not have MFA enabled.
+        </div>
+
+        <div class="p-3 bg-red-950/40 border-l-2 border-red-500 rounded text-red-300">
+          <span class="font-bold">[CRITICAL]</span>
+          A sample virtual machine allows unrestricted SSH access.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Security Controls -->
+    <div class="bg-gray-900 p-5 rounded-xl border border-gray-800 shadow-md">
+      <h3 class="text-lg font-bold text-emerald-400 mb-4">
+        ⚡ Security Policy Controls
+      </h3>
+
+      <p class="text-xs text-gray-500 mb-4">
+        Demo switches only. They do not change actual cloud settings.
+      </p>
+
+      <div class="space-y-4">
+
+        <div class="flex justify-between items-center gap-3 p-3 bg-gray-950 rounded-lg border border-gray-800">
+          <div>
+            <p class="font-semibold text-sm">MFA Policy</p>
+            <p class="text-xs text-gray-500 mt-1">Require multi-factor authentication</p>
+          </div>
+          <label class="flex items-center gap-2 text-xs text-emerald-400">
+            <input type="checkbox" checked onchange="updatePolicy(this, 'MFA Policy')">
+            Enabled
+          </label>
+        </div>
+
+        <div class="flex justify-between items-center gap-3 p-3 bg-gray-950 rounded-lg border border-gray-800">
+          <div>
+            <p class="font-semibold text-sm">Public Storage Protection</p>
+            <p class="text-xs text-gray-500 mt-1">Check public storage access</p>
+          </div>
+          <label class="flex items-center gap-2 text-xs text-emerald-400">
+            <input type="checkbox" checked onchange="updatePolicy(this, 'Public Storage Protection')">
+            Enabled
+          </label>
+        </div>
+
+        <div class="flex justify-between items-center gap-3 p-3 bg-gray-950 rounded-lg border border-gray-800">
+          <div>
+            <p class="font-semibold text-sm">SSH Access Review</p>
+            <p class="text-xs text-gray-500 mt-1">Review unrestricted SSH rules</p>
+          </div>
+          <label class="flex items-center gap-2 text-xs text-emerald-400">
+            <input type="checkbox" checked onchange="updatePolicy(this, 'SSH Access Review')">
+            Enabled
+          </label>
+        </div>
+
+      </div>
+
+      <div id="policyMessage" class="mt-4 text-xs text-cyan-300" role="status" aria-live="polite">
+        Demo security policies are enabled.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Findings Table -->
+  <section class="mt-6 bg-gray-900 p-5 rounded-xl border border-gray-800 shadow-md">
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+      <h3 class="text-lg font-bold text-emerald-400">
+        Security Findings
+      </h3>
+
+      <button
+        onclick="exportFindings()"
+        class="bg-cyan-700 hover:bg-cyan-600 text-white text-xs font-bold px-4 py-2 rounded-lg">
+        Export CSV
+      </button>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead class="text-gray-400 uppercase text-xs border-b border-gray-700">
+          <tr>
+            <th class="py-3 pr-4">Finding</th>
+            <th class="py-3 pr-4">Severity</th>
+            <th class="py-3 pr-4">Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="findingsTable">
+          <tr class="border-b border-gray-800">
+            <td class="py-3 pr-4">Missing MFA on administrator</td>
+            <td class="py-3 pr-4 text-amber-400">Medium</td>
+            <td class="py-3 pr-4 text-amber-300">Needs Review</td>
+          </tr>
+
+          <tr class="border-b border-gray-800">
+            <td class="py-3 pr-4">Unrestricted SSH access</td>
+            <td class="py-3 pr-4 text-red-400">High</td>
+            <td class="py-3 pr-4 text-red-300">Open</td>
+          </tr>
+
+          <tr class="border-b border-gray-800">
+            <td class="py-3 pr-4">Storage public access protection</td>
+            <td class="py-3 pr-4 text-emerald-400">Low</td>
+            <td class="py-3 pr-4 text-emerald-300">Passed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="mt-8 text-center text-xs text-gray-500 border-t border-gray-800 pt-4">
+    <p>CloudGuard — Cloud Security Posture Management & Zero-Trust Dashboard</p>
+    <p class="mt-2">Educational project | Demo data only | No live cloud integration</p>
+  </footer>
+
+  <script>
+    function refreshAuditFeed() {
+      const feed = document.getElementById("auditFeed");
+
+      const time = new Date().toLocaleTimeString();
+
+      const entry = document.createElement("div");
+      entry.className =
+        "p-3 bg-cyan-950/40 border-l-2 border-cyan-500 rounded text-cyan-300";
+
+      const label = document.createElement("span");
+      label.className = "font-bold";
+      label.textContent = "[DEMO] ";
+
+      entry.appendChild(label);
+      entry.appendChild(
+        document.createTextNode("Audit feed refreshed at " + time + ".")
+      );
+
+      feed.prepend(entry);
+    }
+
+    function updatePolicy(checkbox, policyName) {
+      const message = document.getElementById("policyMessage");
+
+      message.textContent =
+        policyName + " demo switch is now " +
+        (checkbox.checked ? "enabled." : "disabled.") +
+        " No actual cloud configuration was changed.";
+    }
+
+    function exportFindings() {
+      const rows = [
+        ["Finding", "Severity", "Status"],
+        ["Missing MFA on administrator", "Medium", "Needs Review"],
+        ["Unrestricted SSH access", "High", "Open"],
+        ["Storage public access protection", "Low", "Passed"]
+      ];
+
+      const csv = rows.map(row =>
+        row.map(value =>
+          '"' + value.replace(/"/g, '""') + '"'
+        ).join(",")
+      ).join("\r\n");
+
+      const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8;"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "cloudguard-security-findings.csv";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>
